@@ -10,24 +10,36 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URLDecoder;
 
 public class Main extends AppCompatActivity {
     private static final int PICK_IMAGE = 1;
     private Uri imgUri;
+    private int getLoadbtn = 1;
+    static Bitmap img1 , img2;
+    static String name1, name2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button buttonLoad = (Button)findViewById(R.id.buttonLoad);
+        Button buttonLoad1 = (Button)findViewById(R.id.buttonLoad1);
+        Button buttonLoad2 = (Button)findViewById(R.id.buttonLoad2);
         Button buttonExt = (Button)findViewById(R.id.buttonExit);
-        buttonLoad.setOnClickListener(new View.OnClickListener() {
+        buttonLoad1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loadIMG();
+                getLoadbtn = 1;
+                openGallery();
+            }
+        });
+        buttonLoad2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getLoadbtn = 2;
+                openGallery();
             }
         });
         buttonExt.setOnClickListener(new View.OnClickListener() {
@@ -44,12 +56,9 @@ public class Main extends AppCompatActivity {
     }
         private void openGallery(){
             Intent gallery = new Intent(Intent.ACTION_PICK);
-            gallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
             gallery.setType(MediaStore.Images.Media.CONTENT_TYPE);
             startActivityForResult(gallery,PICK_IMAGE);
-            if(gallery.getClipData().getItemCount()>=2){
-                gallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,false);
-            }
+
     }
 
     @Override
@@ -58,27 +67,26 @@ public class Main extends AppCompatActivity {
 
         if(resultCode == RESULT_OK && requestCode == PICK_IMAGE){
            try {
-               if(data.getClipData().getItemCount()>=2) {
-                   
-                   //isFirst = true;
-                   //loadIMG();
-               }
-               else{
-                   data.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);
-               }
-               String name1 = getImg(data.getClipData().getItemAt(0).getUri());
-               Bitmap img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getClipData().getItemAt(0).getUri());
-               String name2 = getImg(data.getClipData().getItemAt(1).getUri());
-               Bitmap img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getClipData().getItemAt(1).getUri());
+                if(getLoadbtn ==1) {
+                    name1 = getImg(data.getData());
+                    img1 = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                } else if(getLoadbtn == 2) {
+                    name2 = getImg(data.getData());
+                    img2 = MediaStore.Images.Media.getBitmap(getContentResolver(), data.getData());
+                }
            } catch(FileNotFoundException e){
                e.printStackTrace();
            } catch(IOException e){
                e.printStackTrace();
            }
         }
-        Intent intent = new Intent(this,gameView.class);
-        startActivity(intent);
-        this.finish();
+        if(img1!=null && img2!=null) {
+            Intent intent = new Intent(this, gameView.class);
+            intent.putExtra("img1", img1);
+            intent.putExtra("img2", img2);
+            startActivity(intent);
+            this.finish();
+        }
     }
 
     public String getImg(Uri data){

@@ -17,19 +17,19 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/buttonLoad"
+        android:layout_above="@+id/buttonLoad1"
         android:background="#c2c2c2"
         android:textColor="#000000" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="IMGLOAD"
-        android:id="@+id/buttonLoad"
-        android:layout_marginBottom="33dp"
+        android:text="IMGLOAD1"
+        android:id="@+id/buttonLoad1"
+        android:layout_marginBottom="34dp"
         android:focusable="true"
-        android:layout_marginLeft="67dp"
-        android:layout_marginStart="67dp"
+        android:layout_marginLeft="69dp"
+        android:layout_marginStart="69dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -39,10 +39,19 @@
         android:layout_height="wrap_content"
         android:text="EXIT"
         android:id="@+id/buttonExit"
-        android:layout_alignBottom="@+id/buttonLoad"
+        android:layout_alignBottom="@+id/buttonLoad1"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="71dp"
         android:layout_marginEnd="71dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="IMGLOAD2"
+        android:id="@+id/buttonLoad2"
+        android:layout_below="@+id/statusView"
+        android:layout_toRightOf="@+id/buttonLoad1"
+        android:layout_toEndOf="@+id/buttonLoad1" />
 
 </RelativeLayout>

@@ -35,11 +35,16 @@ public class gameView extends AppCompatActivity {
         byte [] array2 = img.getByteArray("img2");
         Bitmap img1 = BitmapFactory.decodeByteArray(array1, 0 , array1.length);
         Bitmap img2 = BitmapFactory.decodeByteArray(array2, 0, array2.length);
+
+        labeling label = new labeling(img1, img2);
+        Bitmap sub_img = label.labelingDo();
+
         ImageView view1 = (ImageView)findViewById(R.id.imageView);
         ImageView view2 = (ImageView)findViewById(R.id.imageView2);
 
         view1.setImageBitmap(img1);
         view2.setImageBitmap(img2);
+
 
     }
     private void moveBck(){

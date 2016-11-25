@@ -2,17 +2,19 @@ package com.example.aaron.searchwhy;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import java.util.Stack;
 
-public class labeling {
+public class labeling{
 	Bitmap i_image;
 	Bitmap j_image;
 	Bitmap sub_image;
+
 	public labeling(Bitmap a, Bitmap b){
 		this.i_image = a;
 		this.j_image = b;
 	}
-	public void labelingDo(){
+	public Bitmap labelingDo(){
 
 		 
 		 Stack<Point> labelstack = new Stack();
@@ -58,47 +60,47 @@ public class labeling {
 		 for (int i = 0; i < width; i++){
 			 for (int j = 0; j < height; j++) {
 				 int color = sub_image.getPixel(i, j);
-				 if (Color.red(color) != 0 || Color.blue(color) != 0 || Color.green(color) != 0) {
+				 if (Color.red(color) != 0 && (Color.blue(color) != 0 || Color.green(color) != 0)) {
 					 labelstack.push(new Point(i, j));
 					 sub_image.setPixel(i, j, Color.rgb(0, index, Color.green(color)));
-					 while (!labelstack.empty()){
+					 System.out.println(index);
+					 while (!labelstack.empty()) {
 						 point = labelstack.pop();
-						 color = sub_image.getPixel(point.x-1, point.y);
-						 if(Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color)!=0)) {
-							 labelstack.push(new Point(point.x-1, point.y));
-							 sub_image.setPixel(point.x-1, point.y, Color.rgb(0, index, Color.green(color)));			 
+						 color = sub_image.getPixel(point.x - 1, point.y);
+						 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+							 labelstack.push(new Point(point.x - 1, point.y));
+							 sub_image.setPixel(point.x - 1, point.y, Color.rgb(0, index, Color.green(color)));
 						 }
-						 color = sub_image.getPixel(point.x+1, point.y);
-						 if(Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color)!=0)) {
-							 labelstack.push(new Point(point.x+1, point.y));
-							 sub_image.setPixel(point.x+1, point.y, Color.rgb(0, index, Color.green(color)));			 
+						 if (point.x + 1 < width) {
+							 color = sub_image.getPixel(point.x + 1, point.y);
+							 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+								 labelstack.push(new Point(point.x + 1, point.y));
+								 sub_image.setPixel(point.x + 1, point.y, Color.rgb(0, index, Color.green(color)));
+							 }
 						 }
-						 color = sub_image.getPixel(point.x, point.y-1);
-						 if(Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color)!=0)) {
-							 labelstack.push(new Point(point.x, point.y-1));
-							 sub_image.setPixel(point.x, point.y-1, Color.rgb(0, index, Color.green(color)));			 
+
+						 color = sub_image.getPixel(point.x, point.y - 1);
+						 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+							 labelstack.push(new Point(point.x, point.y - 1));
+							 sub_image.setPixel(point.x, point.y - 1, Color.rgb(0, index, Color.green(color)));
 						 }
-						 color = sub_image.getPixel(point.x, point.y+1);
-						 if(Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color)!=0)) {
-							 labelstack.push(new Point(point.x, point.y+1));
-							 sub_image.setPixel(point.x, point.y+1, Color.rgb(0, index, Color.green(color)));			 
+
+						 if (point.y + 1 < height) {
+							 color = sub_image.getPixel(point.x, point.y + 1);
+							 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+								 labelstack.push(new Point(point.x, point.y + 1));
+								 sub_image.setPixel(point.x, point.y + 1, Color.rgb(0, index, Color.green(color)));
+							 }
 						 }
 					 }
-			
+					 index++;
 				 }
-				 index++;
+
 			 }
 		 }
+		return sub_image;
 	}
-	
-	public class Point{
-		public Point(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
-		public int x;
-		public int y;
-	}
+
 	
 }
 

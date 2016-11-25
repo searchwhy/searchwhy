@@ -9,6 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.aaron.searchwhy.gameView">
 
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_alignParentTop="true"

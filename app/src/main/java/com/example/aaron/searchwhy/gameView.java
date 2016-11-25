@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.LinearLayout.LayoutParams;
@@ -47,8 +49,10 @@ public class gameView extends AppCompatActivity {
         ImageView view1 = (ImageView)findViewById(R.id.imageView);
         ImageView view2 = (ImageView)findViewById(R.id.imageView2);
 
+        Bitmap new_img = drawCircle(img2, 50, 50);
         view1.setImageBitmap(img1);
-        view2.setImageBitmap(img2);
+        view2.setImageBitmap(new_img);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -77,5 +81,16 @@ public class gameView extends AppCompatActivity {
         Intent intent = new Intent(this,Main.class);
         startActivity(intent);
         finish();
+    }
+
+    public Bitmap drawCircle(Bitmap img1, int x, int y){
+        Bitmap new_img = Bitmap.createBitmap(img1.getWidth(), img1.getHeight(),
+                Bitmap.Config.ARGB_8888);
+        Bitmap circle = BitmapFactory.decodeResource(getResources(),
+                R.drawable.correct_m);
+        Canvas canvas = new Canvas(new_img);
+        canvas.drawBitmap(img1, new Matrix(), null);
+        canvas.drawBitmap(circle, x, y, null);
+        return new_img;
     }
 }

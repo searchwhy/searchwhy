@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.util.DisplayMetrics;
@@ -27,7 +28,10 @@ public class gameView extends AppCompatActivity {
     boolean isFirst=true;
     Bitmap newImg;
     Bitmap img1, img2;
+    Bitmap sub_img;
     ImageView view1, view2;
+    gameInfo gameInfo;
+    int index = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +55,8 @@ public class gameView extends AppCompatActivity {
         img2 = BitmapFactory.decodeByteArray(array2, 0, array2.length);
         pgBar = (ProgressBar)findViewById(R.id.progressBar);
         labeling label = new labeling(img1, img2);
-        Bitmap sub_img = label.labelingDo();
-        final gameInfo gameInfo = new gameInfo(sub_img,label.getIndex(),label.getSpotArea());
+        sub_img = label.labelingDo();
+        gameInfo = new gameInfo(sub_img,label.getIndex(),label.getSpotArea());
         pgBar.setMax(gameInfo.time);
 
 
@@ -97,39 +101,74 @@ public class gameView extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+    public Point getCircleXY(float x, float y, int Height, int Width, float hepx, float wipx){
+        Point point = new Point();
+        float a,b,c,d;
+        if(Height>Width){
+            c= hepx/Height;
+            a =Height/ hepx ;
+            b =1/c;
+            d = (wipx - c*Width)/2;
+            point.x = (int)(x*b - d+60);
+            point.y = (int)(y*a-40);
+        }else{
+            c= wipx/Width;
+            b = Width/wipx;
+            a = 1/c;
+            d = (hepx - c*Height)/2;
+            point.x = (int)(x*b - 40);
+            point.y = (int)(y*a - d - 60);
+        }
+        return point;
+    }
+    public Point getPicXY(float x, float y, int Height, int Width, float hepx, float wipx){
+        Point point = new Point();
+        float a,b,c,d;
+        if(Height>Width){
+            c= hepx/Height;
+            a =Height/ hepx ;
+            d = (wipx - c*Width)/2;
+            point.x = (int)((x-d)/c);
+            point.y = (int)(y*a);
+        }else{
+            c= wipx/Width;
+            b = Width/wipx;
+            d = (hepx - c*Height)/2;
+            point.x = (int)(x*b);
+            point.y = (int)((y - d)/c);
+        }
+        return point;
+    }
     public View.OnTouchListener tEvent = new View.OnTouchListener() {
         @Override
                public boolean onTouch(View v, MotionEvent event){
-            if(event.getAction()==MotionEvent.ACTION_DOWN){
+            if(event.getAction()==MotionEvent.ACTION_DOWN) {
                 x = event.getX();
                 y = event.getY();
-               int[] temp = new int[2];
+                int[] temp = new int[2];
                 view2.getLocationOnScreen(temp);
                 float widthpx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 240, getResources().getDisplayMetrics());
                 float heightpx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 220, getResources().getDisplayMetrics());
-                float a,b,c,d;
-                if(img2.getHeight()>img2.getWidth()){
-                    c= heightpx/img2.getHeight();
-                    a =img2.getHeight()/ heightpx ;
-                    b =1/c;
-                    d = (widthpx - c*img2.getWidth())/2;
-                    x = x*b - d+60;
-                    y = y*a-40;
-                }else{
-                    c= widthpx/img2.getWidth();
-                    b = img2.getWidth()/widthpx;
-                    a = 1/c;
-                    d = (heightpx - c*img2.getHeight())/2;
-                    x = x*b - 40;
-                    y = y*a - d - 60;
+                Point circleP = getCircleXY(x, y, img2.getHeight(), img2.getWidth(), heightpx, widthpx);
+                Point picP = getPicXY(x, y, img2.getHeight(), img2.getWidth(), heightpx, widthpx);
+                int sub_imgPixel = sub_img.getPixel(picP.x, picP.y);
+                int colorBlue = Color.blue(sub_imgPixel);
+
+                if (colorBlue != 0) {
+                    newImg = drawCircle(img2, circleP.x, circleP.y);
+                    img2 = newImg;
+                    view2.setImageBitmap(newImg);
+                    index++;
+                } else {
+                    view2.setImageBitmap(img2);
                 }
-                newImg = drawCircle(img2, x,y);
-                img2 = newImg;
-                view2.setImageBitmap(newImg);
+                if(index==gameInfo.index){
+                    finish();
+                }
             }
             return true;
         }
-        public Bitmap drawCircle(Bitmap img1, float x, float y){
+        public Bitmap drawCircle(Bitmap img1, int x, int y){
             Bitmap new_img = Bitmap.createBitmap(img1.getWidth(), img1.getHeight(),
                     Bitmap.Config.ARGB_8888);
             Bitmap circle = BitmapFactory.decodeResource(getResources(),

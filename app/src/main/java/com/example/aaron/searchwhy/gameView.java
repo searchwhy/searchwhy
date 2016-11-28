@@ -20,6 +20,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import java.util.Stack;
+
 public class gameView extends AppCompatActivity {
     static  ProgressBar pgBar;
     int a= 0;
@@ -158,6 +160,7 @@ public class gameView extends AppCompatActivity {
                     newImg = drawCircle(img2, circleP.x, circleP.y);
                     img2 = newImg;
                     view2.setImageBitmap(newImg);
+                    sub_img = eraseIndex(sub_img, picP);
                     index++;
                 } else {
                     view2.setImageBitmap(img2);
@@ -178,7 +181,43 @@ public class gameView extends AppCompatActivity {
             canvas.drawBitmap(circle, x, y, null);
             return new_img;
         }
+        public Bitmap eraseIndex(Bitmap sub_img, Point pic){
+            Stack<Point> stack = new Stack();
+            int width = sub_img.getWidth();
+            int height = sub_img.getHeight();
+            int color;
+            stack.push(pic);
+            sub_img.setPixel(pic.x, pic.y, Color.rgb(0,0,0));
+            while(!stack.empty()){
+                Point point = stack.pop();
+                color = sub_img.getPixel(point.x-1, point.y);
+                if(Color.blue(color) != 0){
+                    stack.push(new Point(point.x-1, point.y));
+                    sub_img.setPixel(point.x-1, point.y, Color.rgb(0,0,0));
+                }
+                if (point.x+1 < width)
+                    color = sub_img.getPixel(point.x+1, point.y);
+                    if (Color.blue(color) != 0) {
+                        stack.push(new Point(point.x+1, point.y));
+                        sub_img.setPixel(point.x+1, point.y, Color.rgb(0,0,0));
+                    }
+                color = sub_img.getPixel(point.x, point.y-1);
+                if (Color.blue(color) != 0){
+                    stack.push(new Point(point.x, point.y-1));
+                    sub_img.setPixel(point.x, point.y-1, Color.rgb(0,0,0));
+                }
+                if(point.y+1 < height){
+                    color = sub_img.getPixel(point.x, point.y+1);
+                    if(Color.blue(color)!=0){
+                        stack.push(new Point(point.x, point.y+1));
+                        sub_img.setPixel(point.x, point.y+1, Color.rgb(0,0,0));
+                    }
 
+                }
 
+            }
+
+            return sub_img;
+        }
     };
 }

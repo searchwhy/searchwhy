@@ -17,6 +17,6 @@ public class gameInfo {
         this.index = index;
         this.spotArea = spotArea;
         this.area = buf.getHeight()*buf.getWidth();
-        this.time = (int)((index*index*area)/(1*spotArea));
+        this.time = (int)((index*index*area)/(12*spotArea));
     }
 }

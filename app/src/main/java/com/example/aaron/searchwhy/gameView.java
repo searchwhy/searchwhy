@@ -24,6 +24,7 @@ import java.util.Stack;
 
 public class gameView extends AppCompatActivity {
     static  ProgressBar pgBar;
+    private Thread thread;
     int a= 0;
     float x =100;
     float y =100;
@@ -34,6 +35,7 @@ public class gameView extends AppCompatActivity {
     ImageView view1, view2;
     gameInfo gameInfo;
     int index = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +76,7 @@ public class gameView extends AppCompatActivity {
         }
 
 
-        new Thread(new Runnable() {
+        thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while(a<gameInfo.time){
@@ -83,6 +85,8 @@ public class gameView extends AppCompatActivity {
                         a++;
 
                     }catch(Exception e){
+                        finish();
+                        break;
                     }finally{
                         runOnUiThread(new Runnable() {
                             @Override
@@ -95,12 +99,14 @@ public class gameView extends AppCompatActivity {
                 }
                 moveBck();
             }
-        }).start();
+        });
+        thread.start();
 
     }
     private void moveBck(){
         Intent intent = new Intent(this,Main.class);
         startActivity(intent);
+        thread.interrupt();
         finish();
     }
     public Point getCircleXY(float x, float y, int Height, int Width, float hepx, float wipx){
@@ -148,12 +154,18 @@ public class gameView extends AppCompatActivity {
                 x = event.getX();
                 y = event.getY();
                 int[] temp = new int[2];
+                int sub_imgPixel;
                 view2.getLocationOnScreen(temp);
                 float widthpx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 240, getResources().getDisplayMetrics());
                 float heightpx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 220, getResources().getDisplayMetrics());
                 Point circleP = getCircleXY(x, y, img2.getHeight(), img2.getWidth(), heightpx, widthpx);
                 Point picP = getPicXY(x, y, img2.getHeight(), img2.getWidth(), heightpx, widthpx);
-                int sub_imgPixel = sub_img.getPixel(picP.x, picP.y);
+                if(picP.x < sub_img.getWidth() && picP.y < sub_img.getHeight()){
+                    sub_imgPixel = sub_img.getPixel(picP.x, picP.y);
+                }
+                else {
+                    sub_imgPixel = sub_img.getPixel(0,0);
+                }
                 int colorBlue = Color.blue(sub_imgPixel);
 
                 if (colorBlue != 0) {
@@ -166,7 +178,7 @@ public class gameView extends AppCompatActivity {
                     view2.setImageBitmap(img2);
                 }
                 if(index==gameInfo.index){
-                    finish();
+                    moveBck();
                 }
             }
             return true;

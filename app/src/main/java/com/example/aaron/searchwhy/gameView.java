@@ -20,8 +20,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import java.util.Stack;
+
 public class gameView extends AppCompatActivity {
     static  ProgressBar pgBar;
+    private Thread thread;
     int a= 0;
     float x =100;
     float y =100;
@@ -32,6 +35,7 @@ public class gameView extends AppCompatActivity {
     ImageView view1, view2;
     gameInfo gameInfo;
     int index = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,7 @@ public class gameView extends AppCompatActivity {
         }
 
 
-        new Thread(new Runnable() {
+        thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while(a<gameInfo.time){
@@ -81,6 +85,8 @@ public class gameView extends AppCompatActivity {
                         a++;
 
                     }catch(Exception e){
+                        finish();
+                        break;
                     }finally{
                         runOnUiThread(new Runnable() {
                             @Override
@@ -93,12 +99,14 @@ public class gameView extends AppCompatActivity {
                 }
                 moveBck();
             }
-        }).start();
+        });
+        thread.start();
 
     }
     private void moveBck(){
         Intent intent = new Intent(this,Main.class);
         startActivity(intent);
+        thread.interrupt();
         finish();
     }
     public Point getCircleXY(float x, float y, int Height, int Width, float hepx, float wipx){
@@ -146,24 +154,31 @@ public class gameView extends AppCompatActivity {
                 x = event.getX();
                 y = event.getY();
                 int[] temp = new int[2];
+                int sub_imgPixel;
                 view2.getLocationOnScreen(temp);
                 float widthpx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 240, getResources().getDisplayMetrics());
                 float heightpx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 220, getResources().getDisplayMetrics());
                 Point circleP = getCircleXY(x, y, img2.getHeight(), img2.getWidth(), heightpx, widthpx);
                 Point picP = getPicXY(x, y, img2.getHeight(), img2.getWidth(), heightpx, widthpx);
-                int sub_imgPixel = sub_img.getPixel(picP.x, picP.y);
+                if(picP.x < sub_img.getWidth() && picP.y < sub_img.getHeight()){
+                    sub_imgPixel = sub_img.getPixel(picP.x, picP.y);
+                }
+                else {
+                    sub_imgPixel = sub_img.getPixel(0,0);
+                }
                 int colorBlue = Color.blue(sub_imgPixel);
 
                 if (colorBlue != 0) {
                     newImg = drawCircle(img2, circleP.x, circleP.y);
                     img2 = newImg;
                     view2.setImageBitmap(newImg);
+                    sub_img = eraseIndex(sub_img, picP);
                     index++;
                 } else {
                     view2.setImageBitmap(img2);
                 }
                 if(index==gameInfo.index){
-                    finish();
+                    moveBck();
                 }
             }
             return true;
@@ -178,7 +193,43 @@ public class gameView extends AppCompatActivity {
             canvas.drawBitmap(circle, x, y, null);
             return new_img;
         }
+        public Bitmap eraseIndex(Bitmap sub_img, Point pic){
+            Stack<Point> stack = new Stack();
+            int width = sub_img.getWidth();
+            int height = sub_img.getHeight();
+            int color;
+            stack.push(pic);
+            sub_img.setPixel(pic.x, pic.y, Color.rgb(0,0,0));
+            while(!stack.empty()){
+                Point point = stack.pop();
+                color = sub_img.getPixel(point.x-1, point.y);
+                if(Color.blue(color) != 0){
+                    stack.push(new Point(point.x-1, point.y));
+                    sub_img.setPixel(point.x-1, point.y, Color.rgb(0,0,0));
+                }
+                if (point.x+1 < width)
+                    color = sub_img.getPixel(point.x+1, point.y);
+                    if (Color.blue(color) != 0) {
+                        stack.push(new Point(point.x+1, point.y));
+                        sub_img.setPixel(point.x+1, point.y, Color.rgb(0,0,0));
+                    }
+                color = sub_img.getPixel(point.x, point.y-1);
+                if (Color.blue(color) != 0){
+                    stack.push(new Point(point.x, point.y-1));
+                    sub_img.setPixel(point.x, point.y-1, Color.rgb(0,0,0));
+                }
+                if(point.y+1 < height){
+                    color = sub_img.getPixel(point.x, point.y+1);
+                    if(Color.blue(color)!=0){
+                        stack.push(new Point(point.x, point.y+1));
+                        sub_img.setPixel(point.x, point.y+1, Color.rgb(0,0,0));
+                    }
 
+                }
 
+            }
+
+            return sub_img;
+        }
     };
 }

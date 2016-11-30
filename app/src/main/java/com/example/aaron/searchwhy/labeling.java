@@ -28,8 +28,9 @@ public class labeling{
 		 
 		 Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 		 sub_image = Bitmap.createBitmap(width, height, conf);
-		 
-		 for (int i=0; i < width; i++){
+		int areaSize = 0;
+
+		for (int i=0; i < width; i++){
 			 for (int j=0; j < height; j++){
 				 int i_color = i_image.getPixel(i, j);
 				 int j_color = j_image.getPixel(i, j);
@@ -66,6 +67,8 @@ public class labeling{
 					 labelstack.push(new Point(i, j));
 					 sub_image.setPixel(i, j, Color.rgb(0, index, Color.green(color)));
 					 spotArea++;
+					 areaSize=0;
+					 areaSize++;
 					 System.out.println(index);
 					 while (!labelstack.empty()) {
 						 point = labelstack.pop();
@@ -74,21 +77,47 @@ public class labeling{
 							 labelstack.push(new Point(point.x - 1, point.y));
 							 sub_image.setPixel(point.x - 1, point.y, Color.rgb(0, index, Color.green(color)));
 							 spotArea++;
+							 areaSize++;
 						 }
+						 color = sub_image.getPixel(point.x-1, point.y-1);
+						 if(Color.red(color)!=0 && (Color.green(color)!=0 || Color.blue(color)!=0)){
+							 labelstack.push(new Point(point.x-1, point.y-1));
+							 sub_image.setPixel(point.x-1, point.y-1, Color.rgb(0, index, Color.blue(color)));
+							 spotArea++;
+							 areaSize++;
+						 }
+
 						 if (point.x + 1 < width) {
 							 color = sub_image.getPixel(point.x + 1, point.y);
 							 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
 								 labelstack.push(new Point(point.x + 1, point.y));
-								 sub_image.setPixel(point.x + 1, point.y, Color.rgb(0, index, Color.green(color)));
+								 sub_image.setPixel(point.x + 1, point.y, Color.rgb(0, index, Color.blue(color)));
 								 spotArea++;
+								 areaSize++;
+							 }
+							 color = sub_image.getPixel(point.x+1, point.y-1);
+							 if(Color.red(color)!=0 && (Color.green(color)!=0 || Color.blue(color)!=0)) {
+								 labelstack.push(new Point(point.x+1, point.y-1));
+								 sub_image.setPixel(point.x+1, point.y-1, Color.rgb(0, index, Color.blue(color)));
+								 spotArea++;
+								 areaSize++;
+							 }
+							 if(point.y+1 < height){
+								 color = sub_image.getPixel(point.x+1, point.y+1);
+								 if(Color.red(color)!=0 && (Color.green(color)!=0 || Color.blue(color)!=0)){
+									 labelstack.push(new Point(point.x+1, point.y+1));
+									 sub_image.setPixel(point.x+1, point.y+1, Color.rgb(0, index, Color.blue(color)));
+									 spotArea++;
+									 areaSize++;
+								 }
 							 }
 						 }
-
 						 color = sub_image.getPixel(point.x, point.y - 1);
 						 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
 							 labelstack.push(new Point(point.x, point.y - 1));
 							 sub_image.setPixel(point.x, point.y - 1, Color.rgb(0, index, Color.green(color)));
 							 spotArea++;
+							 areaSize++;
 						 }
 
 						 if (point.y + 1 < height) {
@@ -97,10 +126,20 @@ public class labeling{
 								 labelstack.push(new Point(point.x, point.y + 1));
 								 sub_image.setPixel(point.x, point.y + 1, Color.rgb(0, index, Color.green(color)));
 								 spotArea++;
+								 areaSize++;
+							 }
+							 color = sub_image.getPixel(point.x-1,  point.y+1);
+							 if(Color.red(color)!=0 && (Color.green(color)!=0 || Color.blue(color)!=0)){
+								 labelstack.push(new Point(point.x-1, point.y+1));
+								 sub_image.setPixel(point.x-1, point.y+1, Color.rgb(0, index, Color.blue(color)));
+								 spotArea++;
+							 	 areaSize++;
 							 }
 						 }
 					 }
-					 index++;
+					 if (areaSize>30) {
+						 index++;
+					 }
 				 }
 
 			 }
@@ -113,8 +152,6 @@ public class labeling{
 	public int getSpotArea(){
 		return this.spotArea;
 	}
-
-	
 }
 
 

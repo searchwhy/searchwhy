@@ -60,6 +60,7 @@ public class labeling{
 			 }
 		 }
 		 
+<<<<<<< HEAD
 		 for (int i = 0; i < width; i++){
 			 for (int j = 0; j < height; j++) {
 				 int color = sub_image.getPixel(i, j);
@@ -144,6 +145,107 @@ public class labeling{
 
 			 }
 		 }
+=======
+		 for (int i = 0; i < width; i++) {
+			 for (int j = 0; j < height; j++) {
+				 int color = sub_image.getPixel(i, j);
+				 if (Color.red(color) != 0 && (Color.blue(color) != 0 || Color.green(color) != 0)) {
+					 labelstack.push(new Point(i, j));
+					 sub_image.setPixel(i, j, Color.rgb(0, index, Color.green(color)));
+					 spotArea++;
+					 areaSize = 0;
+					 areaSize++;
+					 while (!labelstack.empty()) {
+						 point = labelstack.pop();
+						 if (point.x > 0) {
+							 color = sub_image.getPixel(point.x - 1, point.y);
+							 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+								 labelstack.push(new Point(point.x - 1, point.y));
+								 sub_image.setPixel(point.x - 1, point.y, Color.rgb(0, index, Color.green(color)));
+								 spotArea++;
+								 areaSize++;
+							 }
+							 if (point.y > 0) {
+							 	color = sub_image.getPixel(point.x - 1, point.y - 1);
+							 	if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+								 	labelstack.push(new Point(point.x - 1, point.y - 1));
+								 	sub_image.setPixel(point.x - 1, point.y - 1, Color.rgb(0, index, Color.blue(color)));
+								 	spotArea++;
+								 	areaSize++;
+							 	}
+							 }
+						 }
+
+						 if (point.x + 1 < width) {
+							 color = sub_image.getPixel(point.x + 1, point.y);
+							 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+								 labelstack.push(new Point(point.x + 1, point.y));
+								 sub_image.setPixel(point.x + 1, point.y, Color.rgb(0, index, Color.blue(color)));
+								 spotArea++;
+								 areaSize++;
+							 }
+
+							 if (point.y > 0) {
+								 color = sub_image.getPixel(point.x + 1, point.y - 1);
+								 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+									 labelstack.push(new Point(point.x + 1, point.y - 1));
+									 sub_image.setPixel(point.x + 1, point.y - 1, Color.rgb(0, index, Color.blue(color)));
+									 spotArea++;
+									 areaSize++;
+								 }
+							 }
+							 if (point.y + 1 < height) {
+								 color = sub_image.getPixel(point.x + 1, point.y + 1);
+								 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+									 labelstack.push(new Point(point.x + 1, point.y + 1));
+									 sub_image.setPixel(point.x + 1, point.y + 1, Color.rgb(0, index, Color.blue(color)));
+									 spotArea++;
+									 areaSize++;
+								 }
+							 }
+						 }
+
+						 if (point.y > 0) {
+							 color = sub_image.getPixel(point.x, point.y - 1);
+							 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+								 labelstack.push(new Point(point.x, point.y - 1));
+								 sub_image.setPixel(point.x, point.y - 1, Color.rgb(0, index, Color.green(color)));
+								 spotArea++;
+								 areaSize++;
+							 }
+						 }
+
+						 if (point.y + 1 < height) {
+							 color = sub_image.getPixel(point.x, point.y + 1);
+							 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+								 labelstack.push(new Point(point.x, point.y + 1));
+								 sub_image.setPixel(point.x, point.y + 1, Color.rgb(0, index, Color.green(color)));
+								 spotArea++;
+								 areaSize++;
+							 }
+							 if (point.x > 0) {
+								 color = sub_image.getPixel(point.x - 1, point.y + 1);
+								 if (Color.red(color) != 0 && (Color.green(color) != 0 || Color.blue(color) != 0)) {
+									 labelstack.push(new Point(point.x - 1, point.y + 1));
+									 sub_image.setPixel(point.x - 1, point.y + 1, Color.rgb(0, index, Color.blue(color)));
+									 spotArea++;
+									 areaSize++;
+								 }
+							 }
+						 }
+						 if (spotArea > width*height/10){
+							return sub_image;
+						 }
+					 }
+					 if (areaSize > 30) {
+						 index++;
+					 }
+				 }
+
+			 }
+		 }
+
+>>>>>>> refs/heads/master
 		return sub_image;
 	}
 	public int getIndex(){

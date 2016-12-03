@@ -3,7 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/searchwhy.iml" filepath="$PROJECT_DIR$/searchwhy.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/searchwhy-master.iml" filepath="$PROJECT_DIR$/searchwhy-master.iml" />
+>>>>>>> refs/heads/master
     </modules>
   </component>
 </project>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.aaron.searchwhy.Main">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView3"
+        android:layout_above="@+id/buttonLoad1"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/projectname" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="44dp"
+        android:text="IMGLOAD1"
+        android:id="@+id/buttonLoad1"
+        android:layout_marginBottom="34dp"
+        android:focusable="true"
+        android:layout_marginLeft="69dp"
+        android:layout_marginStart="69dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/btn"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="44dp"
+        android:text="EXIT"
+        android:id="@+id/buttonExit"
+        android:layout_alignBottom="@+id/buttonLoad1"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="71dp"
+        android:layout_marginEnd="71dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="44dp"
+        android:text="IMGLOAD2"
+        android:id="@+id/buttonLoad2"
+        android:layout_below="@+id/imageView3"
+        android:layout_toEndOf="@+id/buttonLoad1"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/btn" />
+
+</RelativeLayout>
